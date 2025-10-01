@@ -180,6 +180,14 @@ public class UsersController : Controller
         
         return Ok(users);
     }
+    
+    [HttpOptions]
+    [Produces("application/json", "application/xml")]
+    public ActionResult GetOptions()
+    {
+        Response.Headers.Add("Allow", "GET, POST, OPTIONS");
+        return Ok();
+    }
 
     private object GetPaginationHeader(PageList<UserEntity> pageList)
     {
