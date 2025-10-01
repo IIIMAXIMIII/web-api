@@ -148,4 +148,19 @@ public class UsersController : Controller
         
         return NoContent();
     }
+    
+    [HttpHead("{userId}")]
+    [Produces("application/json", "application/xml")]
+    public ActionResult<UserDto> GetUserByIdHead([FromRoute] Guid userId)
+    {
+        var user = userRepository.FindById(userId);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        Response.Headers.Append("Content-Type", "application/json; charset=utf-8");
+        
+        return Ok();
+    }
 }
