@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -82,18 +82,18 @@ public class UsersController : Controller
             return UnprocessableEntity(ModelState);
         }
 
-        var userFromDb = userRepository.FindById(userId);
-        if (userFromDb == null)
+        userDto.Id = userId;
+
+        var userFromDto = mapper.Map<UserEntity>(userDto);
+        userRepository.UpdateOrInsert(userFromDto, out var isCreated);
+
+        if (isCreated) 
         {
-            var userFromDto = mapper.Map<UserEntity>(userDto);
             return CreatedAtRoute(
                 nameof(GetUserById),
                 new { userId = userFromDto.Id },
                 userFromDto.Id);
         }
-        
-        var user = mapper.Map(userDto, userFromDb);
-        userRepository.UpdateOrInsert(user, out _);
 
         return NoContent();
     }
